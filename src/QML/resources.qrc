@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>CalculatorButton.qml</file>
+        <file>CalculatorWidget.qml</file>
+        <file>HistoryRequestListView.qml</file>
+        <file>HistoryRequestWidget.qml</file>
+        <file>InputTextWidget.qml</file>
+        <file>MainWindow.qml</file>
+        <file>OutputTextWidget.qml</file>
+    </qresource>
+</RCC>
