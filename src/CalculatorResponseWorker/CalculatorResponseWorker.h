@@ -6,17 +6,18 @@
 #include <mutex>
 #include <thread>
 
+#include <QObject>
+
 class CalculatorResponseQueue;
 class CalculatorResponse;
-
-#include <QObject>
 
 class CalculatorResponseWorker : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(CalculatorResponseQueue* calculatorResponseWorker READ getCalculatorResponseQueue WRITE setCalculatorResponseQueue NOTIFY calculatorResponseQueueChanged)
+    Q_PROPERTY(CalculatorResponseQueue* calculatorResponseQueue READ getCalculatorResponseQueue WRITE setCalculatorResponseQueue NOTIFY calculatorResponseQueueChanged)
 
     friend class CalculatorResponseQueue;
+
 
 public:
     CalculatorResponseWorker(QObject* ptrParent = nullptr);
@@ -30,6 +31,7 @@ public:
 
     CalculatorResponseQueue* getCalculatorResponseQueue();
     void setCalculatorResponseQueue(CalculatorResponseQueue* calculatorResponseQueue);
+
 
 private:
     void notify();
@@ -48,6 +50,7 @@ private:
 
 signals:
     void calculatorResponseQueueChanged();
+    void printResponse(QString response);
 };
 
 #endif //CALCULATOR_RESPONSE_WORKER_H

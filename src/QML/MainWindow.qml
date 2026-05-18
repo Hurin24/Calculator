@@ -1,9 +1,12 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
+import Calculator 1.0
 
 ApplicationWindow
 {
+    id: topItem
+
     visible: true
 
     width: 640
@@ -13,6 +16,47 @@ ApplicationWindow
 
     color: "#1e1e1e"
 
+    CalclulatorInputValidator
+    {
+        id: calclulatorInputValidator
+    }
+
+    CalculatorRequestWorker
+    {
+        id: calculatorRequestWorker
+
+        calculatorRequestQueue: calculatorRequestQueue
+        calculatorResponseQueue: calculatorResponseQueue
+    }
+
+    CalculatorRequestQueue
+    {
+        id: calculatorRequestQueue
+
+        calculatorRequestWorker: calculatorRequestWorker
+    }
+
+    CalculatorResponseWorker
+    {
+        id: calculatorResponseWorker
+
+        calculatorResponseQueue: calculatorResponseQueue
+    }
+
+    CalculatorResponseQueue
+    {
+        id: calculatorResponseQueue
+
+        calculatorResponseWorker: calculatorResponseWorker
+    }
+
+    Component.onCompleted:
+    {
+        calculatorRequestQueue.addRequest("123+123", 3);
+        calculatorRequestQueue.addRequest("123+123", 3);
+        calculatorRequestQueue.addRequest("123+123", 3);
+        calculatorRequestQueue.addRequest("123+123", 3);
+    }
 
     RowLayout
     {
@@ -31,6 +75,8 @@ ApplicationWindow
 
             Layout.fillWidth: true
             Layout.fillHeight: true
+
+            calclulatorInputValidator: calclulatorInputValidator
         }
 
         HistoryRequestWidget
@@ -43,6 +89,9 @@ ApplicationWindow
 
             Layout.fillWidth: true
             Layout.fillHeight: true
+
+            calculatorRequestQueue: calculatorRequestQueue
+            calculatorResponseQueue: calculatorResponseQueue
         }
     }
 }

@@ -1,10 +1,14 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
+import Calculator 1.0
 
 Rectangle
 {
     color: Qt.rgba(0,0,0,0)
+
+    required property CalculatorRequestQueue calculatorRequestQueue
+    required property CalculatorResponseQueue calculatorResponseQueue
 
     ColumnLayout
     {
@@ -25,7 +29,7 @@ Rectangle
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            OutputTextWidget
+            TextIndicatorWidget
             {
                 Layout.minimumWidth: 50
                 Layout.minimumHeight: 30
@@ -35,9 +39,13 @@ Rectangle
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+
+                currentText.anchors.left: currentText.parent.left
+
+                currentText.text: calculatorRequestQueue.size
             }
 
-            OutputTextWidget
+            TextIndicatorWidget
             {
                 Layout.minimumWidth: 50
                 Layout.minimumHeight: 30
@@ -47,10 +55,14 @@ Rectangle
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+
+                currentText.anchors.left: currentText.parent.left
+
+                currentText.text: calculatorResponseQueue.size
             }
         }
 
-        HistoryRequestListView
+        TextIndicatorWidget
         {
             Layout.minimumWidth: 300
             Layout.minimumHeight: 300
@@ -60,6 +72,8 @@ Rectangle
 
             Layout.fillWidth: true
             Layout.fillHeight: true
+
+            currentText.anchors.left: currentText.parent.left
         }
     }
 }

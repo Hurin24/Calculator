@@ -1,8 +1,18 @@
 #include "CalculatorRequestWorker.h"
+
 #include "../CalculatorRequestQueue/CalculatorRequestQueue.h"
+#include "../CalculatorResponseQueue/CalculatorResponseQueue.h"
 #include "../CalculatorRequest/CalculatorRequest.h"
+#include "../Calculator/Calculator.h"
+
 
 #include <memory>
+#include <string>
+#include <sstream>
+#include <iostream>
+
+#include <QString>
+#include <QDebug>
 
 CalculatorRequestWorker::CalculatorRequestWorker(QObject* ptrParent) :
                          QObject(ptrParent)
@@ -36,6 +46,30 @@ void CalculatorRequestWorker::setCalculatorRequestQueue(CalculatorRequestQueue* 
         }
 
         emit calculatorRequestQueueChanged();
+    }
+}
+
+CalculatorResponseQueue* CalculatorRequestWorker::getCalculatorResponseQueue()
+{
+    return m_calculatorResponseQueue;
+}
+
+void CalculatorRequestWorker::setCalculatorResponseQueue(CalculatorResponseQueue* calculatorResponseQueue)
+{
+    std::unique_lock<std::mutex> conditionVariableUniqueLock(m_conditionVariableMutex);
+
+    if(m_calculatorResponseQueue != calculatorResponseQueue)
+    {
+        m_calculatorResponseQueue = calculatorResponseQueue;
+
+        conditionVariableUniqueLock.unlock();
+
+        if(m_calculatorResponseQueue)
+        {
+            m_conditionVariable.notify_one();
+        }
+
+        emit calculatorResponseQueueChanged();
     }
 }
 
@@ -103,6 +137,66 @@ void CalculatorRequestWorker::process()
             }
 
             conditionVariableUniqueLock.unlock();
+
+            qDebug() << QString("Получили запрос c ID: %1 и выражением %2 и задержкой %3").arg(request->getID()).arg(request->getExpression()).arg(request->getDelay());
+            std::this_thread::sleep_for(std::chrono::seconds(request->getDelay()));
+
+            conditionVariableUniqueLock.lock();
+
+            if(m_calculatorResponseQueue)
+            {
+                m_calculatorResponseQueue->addResponse(*request, 0.0);
+            }
+
+            conditionVariableUniqueLock.unlock();
+
+            qDebug() << QString("Отправили ответ c ID: %1").arg(request->getID());
+        }
+    }
+}
+
+void CalculatorRequestWorker::calculate(QString& expression)
+{
+    if(expression.isEmpty())
+    {
+
+    }
+
+    std::stringstream tempStream(expression.toStdString());
+
+    char operation;
+    double operandA = 0;
+    double operandB = 0;
+
+    QString error = "Нет ошибок";
+
+    if(!(tempStream >> operandA))
+    {
+        error = "";
+    }
+
+    while(true)
+    {
+        if(!(tempStream >> operation)) break;
+        if(!(tempStream >> operandB)) break;
+
+        switch(operation)
+        {
+            case '+':
+                operandA = doIt(TypeWork::Addition, operandA, operandB);
+                break;
+            case '-':
+                operandA = doIt(TypeWork::Addition, operandA, operandB);
+                break;
+            case '*':
+                operandA = doIt(TypeWork::Multiplication, operandA, operandB);
+                break;
+            case '/':
+                operandA = doIt(TypeWork::Division, operandA, operandB);
+                break;
+            default:
+                error = "Неизвестная операция";
+                break;
         }
     }
 }

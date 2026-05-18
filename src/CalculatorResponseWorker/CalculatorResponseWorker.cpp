@@ -4,6 +4,8 @@
 
 #include <memory>
 
+#include <QDebug>
+
 CalculatorResponseWorker::CalculatorResponseWorker(QObject* ptrParent) :
                           QObject(ptrParent)
 {
@@ -38,6 +40,7 @@ void CalculatorResponseWorker::setCalculatorResponseQueue(CalculatorResponseQueu
         emit calculatorResponseQueueChanged();
     }
 }
+
 
 void CalculatorResponseWorker::notify()
 {
@@ -103,6 +106,10 @@ void CalculatorResponseWorker::process()
             }
 
             conditionVariableUniqueLock.unlock();
+
+            std::this_thread::sleep_for(std::chrono::seconds(5));
+
+            qDebug() << QString("Обработали зарос c ID: %1 результат %2").arg(response->getID()).arg(response->getResultCalculation());
         }
     }
 }

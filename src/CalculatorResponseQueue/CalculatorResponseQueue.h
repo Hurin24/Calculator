@@ -23,7 +23,7 @@ class CalculatorResponseQueue : public QObject
 
 
 public:
-    CalculatorResponseQueue();
+    CalculatorResponseQueue(QObject* ptrParent = nullptr);
 
     CalculatorResponseWorker* getCalculatorResponseWorker();
     void setCalculatorResponseWorker(CalculatorResponseWorker* newCalculatorWorker);

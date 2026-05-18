@@ -2,10 +2,12 @@
 
 #include "../CalculatorRequestWorker/CalculatorRequestWorker.h"
 
-CalculatorRequestQueue::CalculatorRequestQueue()
+CalculatorRequestQueue::CalculatorRequestQueue(QObject* ptrParent) :
+                        QObject(ptrParent)
 {
 
 }
+
 
 CalculatorRequestWorker* CalculatorRequestQueue::getCalculatorRequestWorker()
 {
@@ -20,7 +22,7 @@ void CalculatorRequestQueue::setCalculatorRequestWorker(CalculatorRequestWorker*
 
         if(m_calculatorRequestWorker)
         {
-
+            m_calculatorRequestWorker->notify();
         }
 
         emit calculatorRequestWorkerChanged();
@@ -51,12 +53,13 @@ void CalculatorRequestQueue::addRequest(QString newRequest, int delay)
 int CalculatorRequestQueue::getSize()
 {
     std::lock_guard<std::mutex> lockGuard(m_calculatorRequestListMutex);
+
     return m_calculatorRequestList.size();
 }
 
 std::unique_ptr<CalculatorRequest> CalculatorRequestQueue::getRequest()
 {
-    std::lock_guard<std::mutex> lockGuard(m_calculatorRequestListMutex);
+    std::unique_lock<std::mutex> uniqueLock(m_calculatorRequestListMutex);
 
     auto iterator = m_calculatorRequestList.begin();
 
@@ -64,6 +67,11 @@ std::unique_ptr<CalculatorRequest> CalculatorRequestQueue::getRequest()
     {
         std::unique_ptr<CalculatorRequest> returnPtr(std::move(*iterator));
         m_calculatorRequestList.erase(iterator);
+
+        uniqueLock.unlock();
+
+        emit sizeChanged();
+
         return returnPtr;
     }
     else

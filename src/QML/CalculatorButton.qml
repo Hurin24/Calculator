@@ -24,7 +24,7 @@ Rectangle
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
 
-        font.pixelSize: 16
+        font.pixelSize: 20
     }
 
     MouseArea

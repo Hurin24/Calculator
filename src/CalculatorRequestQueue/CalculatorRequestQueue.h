@@ -21,12 +21,12 @@ class CalculatorRequestQueue : public QObject
     friend class CalculatorRequestWorker;
 
 public:
-    CalculatorRequestQueue();
+    CalculatorRequestQueue(QObject* ptrParent = nullptr);
 
     CalculatorRequestWorker* getCalculatorRequestWorker();
     void setCalculatorRequestWorker(CalculatorRequestWorker* newCalculatorRequestWorker);
 
-    void addRequest(QString newRequest, int delay);
+    Q_INVOKABLE void addRequest(QString newRequest, int delay);
 
     int getSize();
 

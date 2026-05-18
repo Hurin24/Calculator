@@ -1,4 +1,4 @@
-#include "CalculatorLib.h"
+#include "Calculator.h"
 
 #include <stdexcept>
 
@@ -8,26 +8,31 @@ double doIt(int typeWork, double operandA, double operandB) noexcept(false)
     {
         case Addition:
         {
-            return 0.0;
+            return operandA + operandB;
             break;
         }
         case Subtraction:
         {
-            return 0.0;
+            return operandA - operandB;
             break;
         }
         case Multiplication:
         {
-            return 0.0;
+            return operandA * operandB;;
             break;
         }
         case Division:
         {
-            return 0.0;
+            if(operandB == 0)
+            {
+                throw(std::logic_error("Невозможно делить на ноль"));
+            }
+
+            return operandA/operandB;;
             break;
         }
         default:
-            throw(std::logic_error("Недопустимая операция"));
+            throw(std::logic_error("Неизвестная операция"));
             break;
     }
 

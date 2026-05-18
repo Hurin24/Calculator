@@ -1,19 +1,24 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
+import Calculator 1.0
 
 Rectangle
 {
     color: Qt.rgba(0,0,0,0)
+
+    required property CalclulatorInputValidator calclulatorInputValidator
+    property alias textIndicatorWidget: textIndicatorWidget
 
     ColumnLayout
     {
         anchors.fill: parent
         spacing: 10
 
-        //Поле ввода
-        InputTextWidget
+        TextIndicatorWidget
         {
+            id: textIndicatorWidget
+
             Layout.minimumWidth: 300
             Layout.minimumHeight: 60
 
@@ -22,6 +27,11 @@ Rectangle
 
             Layout.fillWidth: true
             Layout.fillHeight: true
+
+            currentText.horizontalAlignment: Text.AlignRight
+            currentText.verticalAlignment: Text.AlignBottom
+
+            currentText.text: calclulatorInputValidator.text
         }
 
         //Кнопки калькулятора
@@ -91,6 +101,11 @@ Rectangle
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+
+                onWasReleased:
+                {
+                    calclulatorInputValidator.tryAppendText(symbol)
+                }
             }
 
             //Второй ряд
@@ -106,6 +121,11 @@ Rectangle
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+
+                onWasReleased:
+                {
+                    calclulatorInputValidator.tryAppendText(symbol)
+                }
             }
 
             CalculatorButton
@@ -120,6 +140,11 @@ Rectangle
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+
+                onWasReleased:
+                {
+                    calclulatorInputValidator.tryAppendText(symbol)
+                }
             }
 
             CalculatorButton
@@ -134,6 +159,11 @@ Rectangle
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+
+                onWasReleased:
+                {
+                    calclulatorInputValidator.tryAppendText(symbol)
+                }
             }
 
             CalculatorButton
@@ -148,6 +178,11 @@ Rectangle
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+
+                onWasReleased:
+                {
+                    calclulatorInputValidator.tryAppendText(symbol)
+                }
             }
 
             //Третий ряд
@@ -163,6 +198,11 @@ Rectangle
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+
+                onWasReleased:
+                {
+                    calclulatorInputValidator.tryAppendText(symbol)
+                }
             }
 
             CalculatorButton
@@ -177,6 +217,11 @@ Rectangle
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+
+                onWasReleased:
+                {
+                    calclulatorInputValidator.tryAppendText(symbol)
+                }
             }
 
             CalculatorButton
@@ -191,6 +236,11 @@ Rectangle
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+
+                onWasReleased:
+                {
+                    calclulatorInputValidator.tryAppendText(symbol)
+                }
             }
 
             CalculatorButton
@@ -205,6 +255,11 @@ Rectangle
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+
+                onWasReleased:
+                {
+                    calclulatorInputValidator.tryAppendText(symbol)
+                }
             }
 
 
@@ -221,6 +276,11 @@ Rectangle
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+
+                onWasReleased:
+                {
+                    calclulatorInputValidator.tryAppendText(symbol)
+                }
             }
 
             CalculatorButton
@@ -235,6 +295,11 @@ Rectangle
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+
+                onWasReleased:
+                {
+                    calclulatorInputValidator.tryAppendText(symbol)
+                }
             }
 
             CalculatorButton
@@ -249,6 +314,11 @@ Rectangle
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+
+                onWasReleased:
+                {
+                    calclulatorInputValidator.tryAppendText(symbol)
+                }
             }
 
             CalculatorButton
@@ -263,14 +333,16 @@ Rectangle
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+
+                onWasReleased:
+                {
+                    calclulatorInputValidator.tryAppendText(symbol)
+                }
             }
 
-
             //Пятый ряд
-            CalculatorButton
+            Item
             {
-                textButton: "±"
-
                 Layout.minimumWidth: 30
                 Layout.minimumHeight: 30
 
@@ -293,11 +365,16 @@ Rectangle
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+
+                onWasReleased:
+                {
+                    calclulatorInputValidator.tryAppendText(symbol)
+                }
             }
 
             CalculatorButton
             {
-                textButton: ","
+                textButton: "."
 
                 Layout.minimumWidth: 30
                 Layout.minimumHeight: 30
@@ -307,6 +384,11 @@ Rectangle
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+
+                onWasReleased:
+                {
+                    calclulatorInputValidator.tryAppendText(symbol)
+                }
             }
 
             CalculatorButton

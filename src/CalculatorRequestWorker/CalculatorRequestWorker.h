@@ -10,11 +10,13 @@
 
 class CalculatorRequest;
 class CalculatorRequestQueue;
+class CalculatorResponseQueue;
 
 class CalculatorRequestWorker : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(CalculatorRequestQueue* calculatorRequestWorker READ getCalculatorRequestQueue WRITE setCalculatorRequestQueue NOTIFY calculatorRequestQueueChanged)
+    Q_PROPERTY(CalculatorRequestQueue* calculatorRequestQueue READ getCalculatorRequestQueue WRITE setCalculatorRequestQueue NOTIFY calculatorRequestQueueChanged)
+    Q_PROPERTY(CalculatorResponseQueue* calculatorResponseQueue READ getCalculatorResponseQueue WRITE setCalculatorResponseQueue NOTIFY calculatorResponseQueueChanged)
 
     friend class CalculatorRequestQueue;
 
@@ -31,6 +33,9 @@ public:
     CalculatorRequestQueue* getCalculatorRequestQueue();
     void setCalculatorRequestQueue(CalculatorRequestQueue* calculatorRequestQueue);
 
+    CalculatorResponseQueue* getCalculatorResponseQueue();
+    void setCalculatorResponseQueue(CalculatorResponseQueue* calculatorResponseQueue);
+
 private:
     void notify();
     void start();
@@ -44,9 +49,13 @@ private:
     std::condition_variable m_conditionVariable;
 
     CalculatorRequestQueue* m_calculatorRequestQueue = nullptr;
+    CalculatorResponseQueue* m_calculatorResponseQueue = nullptr;
+
+    void calculate(QString& expression);
 
 signals:
     void calculatorRequestQueueChanged();
+    void calculatorResponseQueueChanged();
 };
 
 #endif //CALCULATOR_REQUEST_WORKER_H
