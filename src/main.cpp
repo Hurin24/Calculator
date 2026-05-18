@@ -29,30 +29,30 @@ int main(int argc, char *argv[])
     QString tempString = "-123.4353 + 1231 - 12331 / 1434.340 * 1233.888";
     tempString.remove(' ');
 
-    // CalculatorExpressionTokenizer calculatorExpressionTokenizer;
-    // calculatorExpressionTokenizer.reset();
-    // int offset = 0;
+    CalculatorExpressionTokenizer calculatorExpressionTokenizer;
+    calculatorExpressionTokenizer.reset();
+    int offset = 0;
 
-    // while(offset < tempString.size())
-    // {
-    //     int newOffset = calculatorExpressionTokenizer.parse(tempString, offset);
+    while(offset < tempString.size())
+    {
+        int newOffset = calculatorExpressionTokenizer.parse(tempString, offset);
 
-    //     if(calculatorExpressionTokenizer.getTokenType() == CalculatorExpressionTokenizer::TokenType::ErrorToken)
-    //     {
-    //         qDebug() << calculatorExpressionTokenizer.getLastError();
-    //         break;
-    //     }
+        if(calculatorExpressionTokenizer.getTokenType() == CalculatorExpressionTokenizer::TokenType::ErrorToken)
+        {
+            qDebug() << calculatorExpressionTokenizer.getLastError();
+            break;
+        }
 
-    //     if(calculatorExpressionTokenizer.getState() == CalculatorExpressionTokenizer::CalculatorExpressionTokenizerState::Error)
-    //     {
-    //         qDebug() << calculatorExpressionTokenizer.getLastError();
-    //         break;
-    //     }
+        if(calculatorExpressionTokenizer.getState() == CalculatorExpressionTokenizer::CalculatorExpressionTokenizerState::Error)
+        {
+            qDebug() << calculatorExpressionTokenizer.getLastError();
+            break;
+        }
 
-    //     qDebug() << "Нашли токен" << calculatorExpressionTokenizer.getToken();
+        qDebug() << "Нашли токен" << calculatorExpressionTokenizer.getToken();
 
-    //     offset += newOffset;
-    // }
+        offset = newOffset;
+    }
 
     // CalculatorRequestQueue calculatorRequestQueue;
     // CalculatorRequestWorker calculatorRequestWorker;

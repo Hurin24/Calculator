@@ -66,8 +66,6 @@ int CalculatorResponseQueue::getSize()
     return m_calculatorResponseList.size();
 }
 
-#include <QDebug>
-
 std::unique_ptr<CalculatorResponse> CalculatorResponseQueue::getResponse()
 {
     std::unique_lock<std::mutex> uniqueLock(m_calculatorResponseListMutex);
@@ -76,12 +74,8 @@ std::unique_ptr<CalculatorResponse> CalculatorResponseQueue::getResponse()
 
     if(iterator != m_calculatorResponseList.end())
     {
-        qDebug() << m_calculatorResponseList.size();
-
         std::unique_ptr<CalculatorResponse> returnPtr(std::move(*iterator));
         m_calculatorResponseList.erase(iterator);
-
-        qDebug() << m_calculatorResponseList.size();
 
         uniqueLock.unlock();
 

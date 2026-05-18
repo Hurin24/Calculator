@@ -15,7 +15,8 @@ public:
         WaitStartFractionalPartNumber, //Ожидаем начало дробной части числа
         WaitEndFractionalPartNumber,   //Ожидаем конец дробной части числа
         WasFoundNumber,                //Нашли конец числа
-        WaitOperationSymbol,           //Ожидаем операционный символ
+        WaitStartOperationSymbol,      //Ожидаем операционный символ
+        WaitEndOperationSymbol,        //Ожидаем операционный символ
         WasFoundOperationSymbol,       //Нашли операционный символ
         Error,
         QuantityParserStates
@@ -63,7 +64,8 @@ private:
         { WasFoundNumber,                   WaitEndFractionalPartNumber,      Error,                            WasFoundNumber,                   Error }, //WaitStartFractionalPartNumber
         { WasFoundNumber,                   WaitEndFractionalPartNumber,      Error,                            WasFoundNumber,                   Error }, //WaitEndFractionalPartNumber
         { Error,                            Error,                            Error,                            Error,                            Error }, //WasFoundNumber
-        { WasFoundOperationSymbol,          Error,                            Error,                            WasFoundOperationSymbol,          Error }, //WaitOperationSymbol
+        { WaitEndOperationSymbol,           Error,                            Error,                            WaitEndOperationSymbol,           Error }, //WaitStartOperationSymbol
+        { WasFoundOperationSymbol,          WasFoundOperationSymbol,          WasFoundOperationSymbol,          WasFoundOperationSymbol,          Error }, //WaitEndOperationSymbol
         { Error,                            Error,                            Error,                            Error,                            Error }, //WasFoundOperationSymbol
         { Error,                            Error,                            Error,                            Error,                            Error }  //Error
     };

@@ -14,9 +14,9 @@ int CalculatorExpressionTokenizer::parse(const QString& expression, int offset)
         return 0;
     }
 
-    for(int i = 0; i + offset < expression.size(); ++i)
+    for(; offset < expression.size(); ++offset)
     {
-        QChar symbol = expression[i + offset];
+        QChar symbol = expression[offset];
 
         SymbolType type = getSymbolType(symbol);
 
@@ -35,27 +35,29 @@ int CalculatorExpressionTokenizer::parse(const QString& expression, int offset)
             }
             case WasFoundNumber:
             {
-                m_state = WaitOperationSymbol;
+                m_state = WaitStartOperationSymbol;
                 m_tokenType = Number;
-                return i + 1;
+                return offset;
                 break;
             }
-            case WaitOperationSymbol:
+            case WaitStartOperationSymbol:
+            case WaitEndOperationSymbol:
             {
+                m_token.append(symbol);
                 break;
             }
             case WasFoundOperationSymbol:
             {
                 m_state = WaitStartIntegerPartNumber;
                 m_tokenType = Operation;
-                m_token.append(symbol);
-                return i + 1;
+                return offset;
                 break;
             }
             case Error:
             {
                 m_tokenType = ErrorToken;
-                setLastError(QString("Не допустимый символ ") + symbol + QString(" после токена Number: ") + m_token);
+                setLastError(QString("Не допустимый символ ") + symbol + QString(" в состоянии ") + m_state);
+                return offset;
                 break;
             }
         }
@@ -66,34 +68,18 @@ int CalculatorExpressionTokenizer::parse(const QString& expression, int offset)
     switch(m_state)
     {
         case WaitNegativeSymbol:
-        {
-            m_state = Error;
-            m_tokenType = ErrorToken;
-            setLastError("Не было найдено ни одного токена");
-            break;
-        }
         case WaitStartIntegerPartNumber:
-        {
-            m_state = Error;
-            m_tokenType = ErrorToken;
-            setLastError("Не было найдено ни одного токена");
-        }
         case WaitEndIntegerPartNumber:
         case WaitStartFractionalPartNumber:
         case WaitEndFractionalPartNumber:
         case WasFoundNumber:
         {
-            m_state = WaitOperationSymbol;
+            m_state = WaitStartOperationSymbol;
             m_tokenType = Number;
             break;
         }
-        case WaitOperationSymbol:
-        {
-            m_state = Error;
-            m_tokenType = ErrorToken;
-            setLastError("Не было найдено ни одного токена");
-            break;
-        }
+        case WaitStartOperationSymbol:
+        case WaitEndOperationSymbol:
         case WasFoundOperationSymbol:
         {
             m_state = WaitStartIntegerPartNumber;
@@ -103,6 +89,7 @@ int CalculatorExpressionTokenizer::parse(const QString& expression, int offset)
         case Error:
         {
             m_tokenType = ErrorToken;
+            setLastError(QString("Ошибка токенизицаии"));
             break;
         }
     }

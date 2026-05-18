@@ -14,7 +14,6 @@ set(CMAKE_AUTORCC ON)
 
 set(SOURCES
     src/CalclulatorInputValidator/CalclulatorInputValidator.cpp
-    src/Calculator/Calculator.cpp
     src/CalculatorExpressionTokenizer/CalculatorExpressionTokenizer.cpp
     src/CalculatorRequest/CalculatorRequest.cpp
     src/CalculatorRequestQueue/CalculatorRequestQueue.cpp
@@ -31,10 +30,13 @@ set(QRC_FILES
     src/QML/resources.qrc
 )
 
+add_subdirectory(src/Calculator)
+
 add_executable(${PROJECT_NAME}
     ${SOURCES}
     ${HEADERS}
     ${QRC_FILES}
 )
 
+target_link_libraries(${PROJECT_NAME} Calculator::Static)
 target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Quick Qt5::Qml)
