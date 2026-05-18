@@ -156,7 +156,7 @@ void CalculatorRequestWorker::calculate(std::unique_ptr<CalculatorRequest>& calc
 
     if(expression.isEmpty())
     {
-        m_calculatorResponseQueue->addResponse(*calculatorRequest, "Ошибка: пустое выражение");
+        m_calculatorResponseQueue->addResponse(*calculatorRequest, "Пустое выражение");
         return;
     }
 
@@ -174,7 +174,7 @@ void CalculatorRequestWorker::calculate(std::unique_ptr<CalculatorRequest>& calc
 
         if(m_calculatorExpressionTokenizer.getState() == CalculatorExpressionTokenizer::CalculatorExpressionTokenizerState::Error)
         {
-            m_calculatorResponseQueue->addResponse(*calculatorRequest, "Ошибка: " + m_calculatorExpressionTokenizer.getLastError());
+            m_calculatorResponseQueue->addResponse(*calculatorRequest, m_calculatorExpressionTokenizer.getLastError());
             break;
         }
 
@@ -186,7 +186,7 @@ void CalculatorRequestWorker::calculate(std::unique_ptr<CalculatorRequest>& calc
 
                 if(token.isEmpty())
                 {
-                    m_calculatorResponseQueue->addResponse(*calculatorRequest, QString("Ошибка: пустой токен Number").arg(token));
+                    m_calculatorResponseQueue->addResponse(*calculatorRequest, "Пустой токен Number");
                     return;
                 }
 
@@ -195,7 +195,7 @@ void CalculatorRequestWorker::calculate(std::unique_ptr<CalculatorRequest>& calc
 
                 if(!isOk)
                 {
-                    m_calculatorResponseQueue->addResponse(*calculatorRequest, QString("Ошибка: не удалось перевести токен %1 в число типа double").arg(token));
+                    m_calculatorResponseQueue->addResponse(*calculatorRequest, QString("Не удалось перевести токен %1 в число типа double").arg(token));
                     return;
                 }
 
@@ -218,14 +218,14 @@ void CalculatorRequestWorker::calculate(std::unique_ptr<CalculatorRequest>& calc
                             operandA = doIt(TypeWork::Division, operandA, operandB);
                             break;
                         default:
-                            m_calculatorResponseQueue->addResponse(*calculatorRequest, QString("Ошибка: неизвестная операция ").arg(operation));
+                            m_calculatorResponseQueue->addResponse(*calculatorRequest, QString("Неизвестная операция %1").arg(operation));
                             return;
                             break;
                     }
                 }
                 catch(const std::logic_error& error)
                 {
-                    m_calculatorResponseQueue->addResponse(*calculatorRequest, QString("Ошибка: %1").arg(error.what()));
+                    m_calculatorResponseQueue->addResponse(*calculatorRequest, error.what());
                     return;
                 }
                 break;
@@ -236,7 +236,7 @@ void CalculatorRequestWorker::calculate(std::unique_ptr<CalculatorRequest>& calc
 
                 if(token.isEmpty())
                 {
-                    m_calculatorResponseQueue->addResponse(*calculatorRequest, QString("Ошибка: пустой токен Operation").arg(token));
+                    m_calculatorResponseQueue->addResponse(*calculatorRequest, "Пустой токен Operation");
                     return;
                 }
 
@@ -245,7 +245,7 @@ void CalculatorRequestWorker::calculate(std::unique_ptr<CalculatorRequest>& calc
             }
             case CalculatorExpressionTokenizer::TokenType::ErrorToken:
             {
-                m_calculatorResponseQueue->addResponse(*calculatorRequest, "Ошибка: " + m_calculatorExpressionTokenizer.getLastError());
+                m_calculatorResponseQueue->addResponse(*calculatorRequest, m_calculatorExpressionTokenizer.getLastError());
                 return;
                 break;
             }

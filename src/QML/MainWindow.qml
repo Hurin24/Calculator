@@ -2,15 +2,23 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import Calculator 1.0
+import Qt.labs.settings 1.0
 
 ApplicationWindow
 {
     id: topItem
 
-    visible: true
+    Settings
+    {
+        id: settings
+        property alias windowWidth: topItem.width
+        property alias windowHeight: topItem.height
+    }
 
-    width: 640
-    height: 480
+    width: settings.windowWidth
+    height: settings.windowHeight
+
+    visible: true
 
     title: "Калькулятор"
 

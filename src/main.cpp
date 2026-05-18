@@ -14,6 +14,9 @@
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
+    app.setOrganizationName("RussianCalculatorCompany");
+    app.setOrganizationDomain("RussianCalculator.com");
+    app.setApplicationName("RussianCalculator");
 
     qmlRegisterType<CalculatorInputReader>("Calculator", 1, 0, "CalculatorInputReader");
     qmlRegisterType<CalculatorOutputWriter>("Calculator", 1, 0, "CalculatorOutputWriter");

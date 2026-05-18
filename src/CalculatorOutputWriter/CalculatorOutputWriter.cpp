@@ -33,7 +33,7 @@ void CalculatorOutputWriter::writeResponse(std::unique_ptr<CalculatorResponse>& 
     if(calculatorResponse->isError())
     {
         QString logMessage("<span style='color: yellow;'>Приняли ответ с ID: %1\n"
-                                                      "Ошибка: %2</span>\n");
+                                                      "Ошибка: %2</span><br>");
         logMessage =  logMessage.arg(calculatorResponse->getID()).arg(calculatorResponse->getErrorString());
 
         emit sendLogMessage(logMessage);
@@ -41,7 +41,7 @@ void CalculatorOutputWriter::writeResponse(std::unique_ptr<CalculatorResponse>& 
     else
     {
         QString logMessage("<span style='color: green;'>Приняли ответ с ID: %1\n"
-                                                      "Результат: %2</span>\n");
+                                                      "Результат: %2</span><br>");
         logMessage = logMessage.arg(calculatorResponse->getID()).arg(calculatorResponse->getResultCalculation());
 
         emit sendLogMessage(logMessage);
