@@ -1,6 +1,8 @@
 #ifndef CALCULATOR_REQUEST_WORKER_H
 #define CALCULATOR_REQUEST_WORKER_H
 
+#include "../CalculatorExpressionTokenizer/CalculatorExpressionTokenizer.h"
+
 #include <atomic>
 #include <condition_variable>
 #include <mutex>
@@ -51,7 +53,9 @@ private:
     CalculatorRequestQueue* m_calculatorRequestQueue = nullptr;
     CalculatorResponseQueue* m_calculatorResponseQueue = nullptr;
 
-    void calculate(QString& expression);
+    CalculatorExpressionTokenizer m_calculatorExpressionTokenizer;
+
+    void calculate(std::unique_ptr<CalculatorRequest>& calculatorRequest);
 
 signals:
     void calculatorRequestQueueChanged();

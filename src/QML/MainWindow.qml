@@ -16,9 +16,16 @@ ApplicationWindow
 
     color: "#1e1e1e"
 
-    CalclulatorInputValidator
+    CalculatorInputReader
     {
-        id: calclulatorInputValidator
+        id: calculatorInputReader
+
+        calculatorRequestQueue: calculatorRequestQueue
+    }
+
+    CalculatorOutputWriter
+    {
+        id: calculatorOutputWriter
     }
 
     CalculatorRequestWorker
@@ -34,6 +41,7 @@ ApplicationWindow
         id: calculatorRequestQueue
 
         calculatorRequestWorker: calculatorRequestWorker
+        calculatorOutputWriter: calculatorOutputWriter
     }
 
     CalculatorResponseWorker
@@ -48,14 +56,7 @@ ApplicationWindow
         id: calculatorResponseQueue
 
         calculatorResponseWorker: calculatorResponseWorker
-    }
-
-    Component.onCompleted:
-    {
-        calculatorRequestQueue.addRequest("123+123", 3);
-        calculatorRequestQueue.addRequest("123+123", 3);
-        calculatorRequestQueue.addRequest("123+123", 3);
-        calculatorRequestQueue.addRequest("123+123", 3);
+        calculatorOutputWriter: calculatorOutputWriter
     }
 
     RowLayout
@@ -76,7 +77,7 @@ ApplicationWindow
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            calclulatorInputValidator: calclulatorInputValidator
+            calculatorInputReader: calculatorInputReader
         }
 
         HistoryRequestWidget
@@ -92,6 +93,7 @@ ApplicationWindow
 
             calculatorRequestQueue: calculatorRequestQueue
             calculatorResponseQueue: calculatorResponseQueue
+            calculatorOutputWriter: calculatorOutputWriter
         }
     }
 }

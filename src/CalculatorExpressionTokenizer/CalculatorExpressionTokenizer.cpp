@@ -14,9 +14,9 @@ int CalculatorExpressionTokenizer::parse(const QString& expression, int offset)
         return 0;
     }
 
-    for(; offset < expression.size(); ++offset)
+    for(int i = 0; offset + i < expression.size(); ++i)
     {
-        QChar symbol = expression[offset];
+        QChar symbol = expression[offset + i];
 
         SymbolType type = getSymbolType(symbol);
 
@@ -37,7 +37,7 @@ int CalculatorExpressionTokenizer::parse(const QString& expression, int offset)
             {
                 m_state = WaitStartOperationSymbol;
                 m_tokenType = Number;
-                return offset;
+                return i;
                 break;
             }
             case WaitStartOperationSymbol:
@@ -50,19 +50,17 @@ int CalculatorExpressionTokenizer::parse(const QString& expression, int offset)
             {
                 m_state = WaitStartIntegerPartNumber;
                 m_tokenType = Operation;
-                return offset;
+                return i;
                 break;
             }
             case Error:
             {
                 m_tokenType = ErrorToken;
-                setLastError(QString("Не допустимый символ ") + symbol + QString(" в состоянии ") + m_state);
-                return offset;
+                setLastError(QString("Не допустимый символ %1 в состоянии %2").arg(symbol).arg(m_state));
+                return i;
                 break;
             }
         }
-
-        qDebug() << m_token;
     }
 
     switch(m_state)
@@ -89,12 +87,12 @@ int CalculatorExpressionTokenizer::parse(const QString& expression, int offset)
         case Error:
         {
             m_tokenType = ErrorToken;
-            setLastError(QString("Ошибка токенизицаии"));
+            setLastError(QString("Ошибка токенизации"));
             break;
         }
     }
 
-    return expression.size() - 1;
+    return expression.size() - offset;
 }
 
 void CalculatorExpressionTokenizer::reset()
@@ -129,53 +127,6 @@ void CalculatorExpressionTokenizer::setLastError(const QString& error)
 {
     m_lastError = error;
 }
-
-// CalculatorExpressionTokenizer::CalculatorExpressionTokenizerState CalculatorExpressionTokenizer::wasFoundEndNumber(SymbolType nextSymbolType, QChar nextSymbol)
-// {
-//     m_tokenType = Number;
-
-//     switch(nextSymbolType)
-//     {
-//         case NegativeSymbol:
-//         {
-//             return WaitOperationSymbol;
-//             break;
-//         }
-//         case DigitSymbol:
-//         {
-//             setLastError(QString("Не допустимый символ ") + nextSymbol + QString(" после токена Number: ") + m_token + QString(", ожидались символы токена Operation"));
-//             return Error;
-//             break;
-//         }
-//         case DotSymbol:
-//         {
-//             setLastError(QString("Не допустимый символ ") + nextSymbol + QString(" после токена Number: ") + m_token + QString(", ожидались символы токена Operation"));
-//             return Error;
-//             break;
-//         }
-//         case OperationSymbol:
-//         {
-//             return WaitOperationSymbol;
-//             break;
-//         }
-//         case AnotherSymbol:
-//         {
-//             setLastError(QString("Не допустимый символ ") + nextSymbol + QString(" после токена Number: ") + m_token + QString(", ожидались символы токена Operation"));
-//             return Error;
-//             break;
-//         }
-//         default:
-//             setLastError(QString("Не допустимый символ ") + nextSymbol + QString(" после токена Number: ") + m_token + QString(", ожидались символы токена Operation"));
-//             return Error;
-//             break;
-//     }
-// }
-
-// CalculatorExpressionTokenizer::CalculatorExpressionTokenizerState CalculatorExpressionTokenizer::wasFoundEndOperation()
-// {
-//     m_tokenType = Operation;
-//     return WaitEndIntegerPartNumber;
-// }
 
 CalculatorExpressionTokenizer::SymbolType CalculatorExpressionTokenizer::getSymbolType(QChar symbol) const
 {

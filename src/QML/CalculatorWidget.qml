@@ -7,8 +7,72 @@ Rectangle
 {
     color: Qt.rgba(0,0,0,0)
 
-    required property CalclulatorInputValidator calclulatorInputValidator
+    required property CalculatorInputReader calculatorInputReader
     property alias textIndicatorWidget: textIndicatorWidget
+
+    Connections
+    {
+        target: calculatorInputReader
+        function onInvalidCharacter()
+        {
+            parallelAnim.complete()
+            parallelAnim.restart()
+        }
+    }
+
+    //Параллельная анимация
+    ParallelAnimation
+    {
+        id: parallelAnim
+        loops: 1
+
+        ColorAnimation
+        {
+            target: textIndicatorWidget.currentText
+            property: "color"
+            from: "red"
+            to: textIndicatorWidget.currentText.color
+            duration: 400
+            easing.type: Easing.InOutQuad
+        }
+
+        SequentialAnimation
+        {
+            id: sequentialAnimation
+
+            property double offset: 1
+
+            NumberAnimation
+            {
+                target: textIndicatorWidget.currentText
+                property: "anchors.rightMargin"
+                from: textIndicatorWidget.currentText.anchors.rightMargin
+                to: textIndicatorWidget.currentText.anchors.rightMargin + sequentialAnimation.offset
+                duration: 100
+                easing.type: Easing.InOutSine
+            }
+
+            NumberAnimation
+            {
+                target: textIndicatorWidget.currentText
+                property: "anchors.rightMargin"
+                from: textIndicatorWidget.currentText.anchors.rightMargin + sequentialAnimation.offset
+                to: textIndicatorWidget.currentText.anchors.rightMargin - sequentialAnimation.offset*2
+                duration: 200
+                easing.type: Easing.InOutSine
+            }
+
+            NumberAnimation
+            {
+                target: textIndicatorWidget.currentText
+                property: "anchors.rightMargin"
+                from: textIndicatorWidget.currentText.anchors.rightMargin - sequentialAnimation.offset
+                to: textIndicatorWidget.currentText.anchors.rightMargin
+                duration: 100
+                easing.type: Easing.InOutSine
+            }
+        }
+    }
 
     ColumnLayout
     {
@@ -31,7 +95,7 @@ Rectangle
             currentText.horizontalAlignment: Text.AlignRight
             currentText.verticalAlignment: Text.AlignBottom
 
-            currentText.text: calclulatorInputValidator.text
+            currentText.text: calculatorInputReader.text
         }
 
         //Кнопки калькулятора
@@ -63,8 +127,10 @@ Rectangle
                 Layout.fillHeight: true
             }
 
-            Item
+            CalculatorButton
             {
+                textButton: "C"
+
                 Layout.minimumWidth: 30
                 Layout.minimumHeight: 30
 
@@ -73,6 +139,11 @@ Rectangle
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+
+                onWasReleased:
+                {
+                    calculatorInputReader.clear()
+                }
             }
 
             CalculatorButton
@@ -87,6 +158,11 @@ Rectangle
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+
+                onWasReleased:
+                {
+                    calculatorInputReader.chopText()
+                }
             }
 
             CalculatorButton
@@ -104,7 +180,7 @@ Rectangle
 
                 onWasReleased:
                 {
-                    calclulatorInputValidator.tryAppendText(symbol)
+                    calculatorInputReader.tryAppendText("/")
                 }
             }
 
@@ -124,7 +200,7 @@ Rectangle
 
                 onWasReleased:
                 {
-                    calclulatorInputValidator.tryAppendText(symbol)
+                    calculatorInputReader.tryAppendText(symbol)
                 }
             }
 
@@ -143,7 +219,7 @@ Rectangle
 
                 onWasReleased:
                 {
-                    calclulatorInputValidator.tryAppendText(symbol)
+                    calculatorInputReader.tryAppendText(symbol)
                 }
             }
 
@@ -162,7 +238,7 @@ Rectangle
 
                 onWasReleased:
                 {
-                    calclulatorInputValidator.tryAppendText(symbol)
+                    calculatorInputReader.tryAppendText(symbol)
                 }
             }
 
@@ -181,7 +257,7 @@ Rectangle
 
                 onWasReleased:
                 {
-                    calclulatorInputValidator.tryAppendText(symbol)
+                    calculatorInputReader.tryAppendText("*")
                 }
             }
 
@@ -201,7 +277,7 @@ Rectangle
 
                 onWasReleased:
                 {
-                    calclulatorInputValidator.tryAppendText(symbol)
+                    calculatorInputReader.tryAppendText(symbol)
                 }
             }
 
@@ -220,7 +296,7 @@ Rectangle
 
                 onWasReleased:
                 {
-                    calclulatorInputValidator.tryAppendText(symbol)
+                    calculatorInputReader.tryAppendText(symbol)
                 }
             }
 
@@ -239,7 +315,7 @@ Rectangle
 
                 onWasReleased:
                 {
-                    calclulatorInputValidator.tryAppendText(symbol)
+                    calculatorInputReader.tryAppendText(symbol)
                 }
             }
 
@@ -258,7 +334,7 @@ Rectangle
 
                 onWasReleased:
                 {
-                    calclulatorInputValidator.tryAppendText(symbol)
+                    calculatorInputReader.tryAppendText(symbol)
                 }
             }
 
@@ -279,7 +355,7 @@ Rectangle
 
                 onWasReleased:
                 {
-                    calclulatorInputValidator.tryAppendText(symbol)
+                    calculatorInputReader.tryAppendText(symbol)
                 }
             }
 
@@ -298,7 +374,7 @@ Rectangle
 
                 onWasReleased:
                 {
-                    calclulatorInputValidator.tryAppendText(symbol)
+                    calculatorInputReader.tryAppendText(symbol)
                 }
             }
 
@@ -317,7 +393,7 @@ Rectangle
 
                 onWasReleased:
                 {
-                    calclulatorInputValidator.tryAppendText(symbol)
+                    calculatorInputReader.tryAppendText(symbol)
                 }
             }
 
@@ -336,7 +412,7 @@ Rectangle
 
                 onWasReleased:
                 {
-                    calclulatorInputValidator.tryAppendText(symbol)
+                    calculatorInputReader.tryAppendText(symbol)
                 }
             }
 
@@ -368,7 +444,7 @@ Rectangle
 
                 onWasReleased:
                 {
-                    calclulatorInputValidator.tryAppendText(symbol)
+                    calculatorInputReader.tryAppendText(symbol)
                 }
             }
 
@@ -387,7 +463,7 @@ Rectangle
 
                 onWasReleased:
                 {
-                    calclulatorInputValidator.tryAppendText(symbol)
+                    calculatorInputReader.tryAppendText(symbol)
                 }
             }
 
@@ -403,6 +479,11 @@ Rectangle
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+
+                onWasReleased:
+                {
+                    calculatorInputReader.createRequest()
+                }
             }
         }
     }

@@ -4,14 +4,17 @@
 
 CalculatorResponse::CalculatorResponse(const CalculatorRequest& calculatorRequest, double resultCalculation) :
                     m_id(calculatorRequest.m_id),
-                    m_resultCalculation(resultCalculation)
+                    m_resultCalculation(resultCalculation),
+                    m_delay(calculatorRequest.m_delay)
 {
 
 }
 
 CalculatorResponse::CalculatorResponse(const CalculatorRequest& calculatorRequest, QString errorString) :
                     m_id(calculatorRequest.m_id),
-                    m_errorString(errorString)
+                    m_errorString(errorString),
+                    m_isError(true),
+                    m_delay(calculatorRequest.m_delay)
 {
 
 }
@@ -29,4 +32,14 @@ double CalculatorResponse::getResultCalculation()
 QString CalculatorResponse::getErrorString()
 {
     return m_errorString;
+}
+
+bool CalculatorResponse::isError()
+{
+    return m_isError;
+}
+
+int CalculatorResponse::getDelay()
+{
+    return m_delay;
 }

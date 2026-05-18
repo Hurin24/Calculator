@@ -131,72 +131,134 @@ void CalculatorRequestWorker::process()
 
             auto request = m_calculatorRequestQueue->getRequest();
 
+            conditionVariableUniqueLock.unlock();
+
             if(!request)
             {
                 break;
             }
 
-            conditionVariableUniqueLock.unlock();
-
-            qDebug() << QString("Получили запрос c ID: %1 и выражением %2 и задержкой %3").arg(request->getID()).arg(request->getExpression()).arg(request->getDelay());
-            std::this_thread::sleep_for(std::chrono::seconds(request->getDelay()));
-
-            conditionVariableUniqueLock.lock();
-
-            if(m_calculatorResponseQueue)
-            {
-                m_calculatorResponseQueue->addResponse(*request, 0.0);
-            }
-
-            conditionVariableUniqueLock.unlock();
-
-            qDebug() << QString("Отправили ответ c ID: %1").arg(request->getID());
+            calculate(request);
         }
     }
 }
 
-void CalculatorRequestWorker::calculate(QString& expression)
+void CalculatorRequestWorker::calculate(std::unique_ptr<CalculatorRequest>& calculatorRequest)
 {
+    std::this_thread::sleep_for(std::chrono::seconds(calculatorRequest->getDelay()));
+
+    if(!calculatorRequest)
+    {
+        return;
+    }
+
+    QString expression = calculatorRequest->getExpression();
+
     if(expression.isEmpty())
     {
-
+        m_calculatorResponseQueue->addResponse(*calculatorRequest, "Ошибка: пустое выражение");
+        return;
     }
 
-    std::stringstream tempStream(expression.toStdString());
-
-    char operation;
     double operandA = 0;
     double operandB = 0;
+    char operation = '+';
 
-    QString error = "Нет ошибок";
+    m_calculatorExpressionTokenizer.reset();
 
-    if(!(tempStream >> operandA))
+    int offset = 0;
+
+    while(offset < expression.size())
     {
-        error = "";
-    }
+        int shift = m_calculatorExpressionTokenizer.parse(expression, offset);
 
-    while(true)
-    {
-        if(!(tempStream >> operation)) break;
-        if(!(tempStream >> operandB)) break;
-
-        switch(operation)
+        if(m_calculatorExpressionTokenizer.getState() == CalculatorExpressionTokenizer::CalculatorExpressionTokenizerState::Error)
         {
-            case '+':
-                operandA = doIt(TypeWork::Addition, operandA, operandB);
+            m_calculatorResponseQueue->addResponse(*calculatorRequest, "Ошибка: " + m_calculatorExpressionTokenizer.getLastError());
+            break;
+        }
+
+        switch(m_calculatorExpressionTokenizer.getTokenType())
+        {
+            case CalculatorExpressionTokenizer::TokenType::Number:
+            {
+                QString token = m_calculatorExpressionTokenizer.getToken();
+
+                if(token.isEmpty())
+                {
+                    m_calculatorResponseQueue->addResponse(*calculatorRequest, QString("Ошибка: пустой токен Number").arg(token));
+                    return;
+                }
+
+                bool isOk = false;
+                operandB = token.toDouble(&isOk);
+
+                if(!isOk)
+                {
+                    m_calculatorResponseQueue->addResponse(*calculatorRequest, QString("Ошибка: не удалось перевести токен %1 в число типа double").arg(token));
+                    return;
+                }
+
+                qDebug() << operandB;
+
+                try
+                {
+                    switch(operation)
+                    {
+                        case '+':
+                            operandA = doIt(TypeWork::Addition, operandA, operandB);
+                            break;
+                        case '-':
+                            operandA = doIt(TypeWork::Subtraction, operandA, operandB);
+                            break;
+                        case '*':
+                            operandA = doIt(TypeWork::Multiplication, operandA, operandB);
+                            break;
+                        case '/':
+                            operandA = doIt(TypeWork::Division, operandA, operandB);
+                            break;
+                        default:
+                            m_calculatorResponseQueue->addResponse(*calculatorRequest, QString("Ошибка: неизвестная операция ").arg(operation));
+                            return;
+                            break;
+                    }
+                }
+                catch(const std::logic_error& error)
+                {
+                    m_calculatorResponseQueue->addResponse(*calculatorRequest, QString("Ошибка: %1").arg(error.what()));
+                    return;
+                }
                 break;
-            case '-':
-                operandA = doIt(TypeWork::Addition, operandA, operandB);
+            }
+            case CalculatorExpressionTokenizer::TokenType::Operation:
+            {
+                QString token = m_calculatorExpressionTokenizer.getToken();
+
+                if(token.isEmpty())
+                {
+                    m_calculatorResponseQueue->addResponse(*calculatorRequest, QString("Ошибка: пустой токен Operation").arg(token));
+                    return;
+                }
+
+                operation = token[0].toLatin1();
                 break;
-            case '*':
-                operandA = doIt(TypeWork::Multiplication, operandA, operandB);
+            }
+            case CalculatorExpressionTokenizer::TokenType::ErrorToken:
+            {
+                m_calculatorResponseQueue->addResponse(*calculatorRequest, "Ошибка: " + m_calculatorExpressionTokenizer.getLastError());
+                return;
                 break;
-            case '/':
-                operandA = doIt(TypeWork::Division, operandA, operandB);
-                break;
+            }
             default:
-                error = "Неизвестная операция";
                 break;
         }
+
+        offset += shift;
+    }
+
+
+    if(m_calculatorResponseQueue)
+    {
+        m_calculatorResponseQueue->addResponse(*calculatorRequest, operandA);
     }
 }

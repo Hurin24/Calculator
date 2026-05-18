@@ -1,6 +1,7 @@
 #include "CalculatorRequestQueue.h"
 
 #include "../CalculatorRequestWorker/CalculatorRequestWorker.h"
+#include "../CalculatorOutputWriter/CalculatorOutputWriter.h"
 
 CalculatorRequestQueue::CalculatorRequestQueue(QObject* ptrParent) :
                         QObject(ptrParent)
@@ -8,8 +9,7 @@ CalculatorRequestQueue::CalculatorRequestQueue(QObject* ptrParent) :
 
 }
 
-
-CalculatorRequestWorker* CalculatorRequestQueue::getCalculatorRequestWorker()
+CalculatorRequestWorker* CalculatorRequestQueue::getCalculatorRequestWorker() const
 {
     return m_calculatorRequestWorker;
 }
@@ -29,25 +29,19 @@ void CalculatorRequestQueue::setCalculatorRequestWorker(CalculatorRequestWorker*
     }
 }
 
-void CalculatorRequestQueue::addRequest(QString newRequest, int delay)
+CalculatorOutputWriter* CalculatorRequestQueue::getCalculatorOutputWriter() const
 {
-    if(delay < 0)
+    return m_calculatorOutputWriter;
+}
+
+void CalculatorRequestQueue::setCalculatorOutputWriter(CalculatorOutputWriter* calculatorOutputWriter)
+{
+    if(m_calculatorOutputWriter != calculatorOutputWriter)
     {
-        delay = 0;
+        m_calculatorOutputWriter = calculatorOutputWriter;
+
+        emit calculatorOutputWriterChanged();
     }
-
-    std::unique_lock<std::mutex> uniqueLock(m_calculatorRequestListMutex);
-
-    m_calculatorRequestList.emplace_back(new CalculatorRequest(newRequest, delay));
-
-    uniqueLock.unlock();
-
-    if(m_calculatorRequestWorker)
-    {
-        m_calculatorRequestWorker->notify();
-    }
-
-    emit sizeChanged();
 }
 
 int CalculatorRequestQueue::getSize()
@@ -55,6 +49,32 @@ int CalculatorRequestQueue::getSize()
     std::lock_guard<std::mutex> lockGuard(m_calculatorRequestListMutex);
 
     return m_calculatorRequestList.size();
+}
+
+void CalculatorRequestQueue::addRequest(QString newRequest, int delay)
+{
+    if(delay < 0)
+    {
+        delay = 0;
+    }
+
+    std::unique_ptr<CalculatorRequest> newCalculatorRequest(new CalculatorRequest(newRequest, delay));
+    m_calculatorOutputWriter->writeRequest(newCalculatorRequest);
+
+
+    std::unique_lock<std::mutex> uniqueLock(m_calculatorRequestListMutex);
+
+    m_calculatorRequestList.push_back(std::move(newCalculatorRequest));
+
+    uniqueLock.unlock();
+
+
+    if(m_calculatorRequestWorker)
+    {
+        m_calculatorRequestWorker->notify();
+    }
+
+    emit sizeChanged();
 }
 
 std::unique_ptr<CalculatorRequest> CalculatorRequestQueue::getRequest()

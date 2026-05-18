@@ -1,6 +1,7 @@
 #include "CalculatorResponseQueue.h"
 
 #include "../CalculatorResponseWorker/CalculatorResponseWorker.h"
+#include "../CalculatorOutputWriter/CalculatorOutputWriter.h"
 
 CalculatorResponseQueue::CalculatorResponseQueue(QObject* ptrParent) :
                          QObject(ptrParent)
@@ -25,6 +26,28 @@ void CalculatorResponseQueue::setCalculatorResponseWorker(CalculatorResponseWork
 
         emit calculatorResponseWorkerChanged();
     }
+}
+
+CalculatorOutputWriter* CalculatorResponseQueue::getCalculatorOutputWriter() const
+{
+    return m_calculatorOutputWriter;
+}
+
+void CalculatorResponseQueue::setCalculatorOutputWriter(CalculatorOutputWriter* calculatorOutputWriter)
+{
+    if(m_calculatorOutputWriter != calculatorOutputWriter)
+    {
+        m_calculatorOutputWriter = calculatorOutputWriter;
+
+        emit calculatorOutputWriterChanged();
+    }
+}
+
+int CalculatorResponseQueue::getSize()
+{
+    std::lock_guard<std::mutex> lockGuard(m_calculatorResponseListMutex);
+
+    return m_calculatorResponseList.size();
 }
 
 void CalculatorResponseQueue::addResponse(const CalculatorRequest& calculatorRequest, double resultCalculation)
@@ -59,13 +82,6 @@ void CalculatorResponseQueue::addResponse(const CalculatorRequest& calculatorReq
     emit sizeChanged();
 }
 
-int CalculatorResponseQueue::getSize()
-{
-    std::lock_guard<std::mutex> lockGuard(m_calculatorResponseListMutex);
-
-    return m_calculatorResponseList.size();
-}
-
 std::unique_ptr<CalculatorResponse> CalculatorResponseQueue::getResponse()
 {
     std::unique_lock<std::mutex> uniqueLock(m_calculatorResponseListMutex);
@@ -78,6 +94,8 @@ std::unique_ptr<CalculatorResponse> CalculatorResponseQueue::getResponse()
         m_calculatorResponseList.erase(iterator);
 
         uniqueLock.unlock();
+
+        m_calculatorOutputWriter->writeResponse(returnPtr);
 
         emit sizeChanged();
 

@@ -107,9 +107,16 @@ void CalculatorResponseWorker::process()
 
             conditionVariableUniqueLock.unlock();
 
-            std::this_thread::sleep_for(std::chrono::seconds(5));
+            std::this_thread::sleep_for(std::chrono::seconds(response->getDelay()*2));
 
-            qDebug() << QString("Обработали зарос c ID: %1 результат %2").arg(response->getID()).arg(response->getResultCalculation());
+            if(response->isError())
+            {
+                qDebug() << QString("Получили ответ c ID: %1. 2").arg(response->getID()).arg(response->getErrorString());
+            }
+            else
+            {
+                qDebug() << QString("Получили ответ c ID: %1. Результат %2").arg(response->getID()).arg(response->getResultCalculation());
+            }
         }
     }
 }

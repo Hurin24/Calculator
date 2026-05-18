@@ -3,6 +3,7 @@
         <file>CalculatorButton.qml</file>
         <file>CalculatorWidget.qml</file>
         <file>HistoryRequestWidget.qml</file>
+        <file>LogViewWidget.qml</file>
         <file>MainWindow.qml</file>
         <file>TextIndicatorWidget.qml</file>
     </qresource>

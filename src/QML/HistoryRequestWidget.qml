@@ -9,6 +9,7 @@ Rectangle
 
     required property CalculatorRequestQueue calculatorRequestQueue
     required property CalculatorResponseQueue calculatorResponseQueue
+    required property CalculatorOutputWriter calculatorOutputWriter
 
     ColumnLayout
     {
@@ -62,8 +63,10 @@ Rectangle
             }
         }
 
-        TextIndicatorWidget
+        LogViewWidget
         {
+            id: logViewWidget
+
             Layout.minimumWidth: 300
             Layout.minimumHeight: 300
 
@@ -73,7 +76,15 @@ Rectangle
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            currentText.anchors.left: currentText.parent.left
+
+            Connections
+            {
+                target: calculatorOutputWriter
+                function onSendLogMessage(logMessage)
+                {
+                    logViewWidget.currentText.append(logMessage)
+                }
+            }
         }
     }
 }

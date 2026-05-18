@@ -18,7 +18,7 @@ public:
         WaitStartOperationSymbol,      //Ожидаем операционный символ
         WaitEndOperationSymbol,        //Ожидаем операционный символ
         WasFoundOperationSymbol,       //Нашли операционный символ
-        Error,
+        Error,                         //Ошибка
         QuantityParserStates
     };
 
@@ -69,22 +69,6 @@ private:
         { Error,                            Error,                            Error,                            Error,                            Error }, //WasFoundOperationSymbol
         { Error,                            Error,                            Error,                            Error,                            Error }  //Error
     };
-
-
-    // CalculatorExpressionTokenizerState m_transitionTable[QuantityParserStates][QuantityParserSymbols] =
-    // {
-    //     //NegativeSymbol                DigitSymbol                     DotSymbol                       OperationSymbol               AnotherSymbol
-    //     { WaitEndIntegerPartNumber,     WaitEndIntegerPartNumber,       WaitEndFractionalPartNumber,    Error,                        Error }, //WaitNegativeSymbol
-    //     { WasFoundNumber,               WaitEndIntegerPartNumber,       WaitEndFractionalPartNumber,    WasFoundNumber,               Error }, //WaitEndIntegerPartNumber
-    //     { WasFoundNumber,               WaitEndFractionalPartNumber,    Error,                          WasFoundNumber,               Error }, //WaitEndFractionalPartNumber
-    //     { WaitOperationSymbol,          Error,                          Error,                          WaitOperationSymbol,          Error }, //WasFoundNumber
-    //     { WasFoundOperationSymbol,      Error,                          Error,                          WasFoundOperationSymbol,      Error }, //WaitOperationSymbol
-    //     { Error,                        WaitEndIntegerPartNumber,       WaitEndIntegerPartNumber,       Error,                        Error }, //WasFoundOperationSymbol
-    //     { Error,                        Error,                          Error,                          Error,                        Error }  //Error
-    // };
-
-    // CalculatorExpressionTokenizerState wasFoundEndNumber(SymbolType nextSymbolType, QChar nextSymbol);
-    // CalculatorExpressionTokenizerState wasFoundEndOperation();
 
     SymbolType getSymbolType(QChar symbol) const;
 };
