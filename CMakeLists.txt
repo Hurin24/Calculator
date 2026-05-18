@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.16)
 
 project(Calculator VERSION 1.0.0 LANGUAGES CXX)
 
+set(CMAKE_PREFIX_PATH "C:\\Qt\\5.15.2\\mingw81_64\\lib\\cmake")
+
 find_package(Qt5 REQUIRED COMPONENTS Core Quick Qml)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -11,6 +13,15 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 set(SOURCES
+    src/CalclulatorInputValidator/CalclulatorInputValidator.cpp
+    src/Calculator/Calculator.cpp
+    src/CalculatorExpressionTokenizer/CalculatorExpressionTokenizer.cpp
+    src/CalculatorRequest/CalculatorRequest.cpp
+    src/CalculatorRequestQueue/CalculatorRequestQueue.cpp
+    src/CalculatorRequestWorker/CalculatorRequestWorker.cpp
+    src/CalculatorResponse/CalculatorResponse.cpp
+    src/CalculatorResponseQueue/CalculatorResponseQueue.cpp
+    src/CalculatorResponseWorker/CalculatorResponseWorker.cpp
     src/main.cpp
 )
 
