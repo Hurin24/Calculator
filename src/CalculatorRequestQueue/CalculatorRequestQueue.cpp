@@ -50,9 +50,10 @@ int CalculatorRequestQueue::getSize()
 
     return m_calculatorRequestList.size();
 }
-
+#include <QDebug>
 void CalculatorRequestQueue::addRequest(QString newRequest, int delay)
 {
+    qDebug() << "Задержка: " << delay;
     if(delay < 0)
     {
         delay = 0;

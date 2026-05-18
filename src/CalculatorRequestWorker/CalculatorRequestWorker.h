@@ -2,6 +2,7 @@
 #define CALCULATOR_REQUEST_WORKER_H
 
 #include "../CalculatorExpressionTokenizer/CalculatorExpressionTokenizer.h"
+#include "../Calculator/CalculatorSharedWrapper.h"
 
 #include <atomic>
 #include <condition_variable>
@@ -54,6 +55,8 @@ private:
     CalculatorResponseQueue* m_calculatorResponseQueue = nullptr;
 
     CalculatorExpressionTokenizer m_calculatorExpressionTokenizer;
+
+    CalculatorSharedWrapper m_calculatorSharedWrapper;
 
     void calculate(std::unique_ptr<CalculatorRequest>& calculatorRequest);
 

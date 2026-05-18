@@ -38,3 +38,5 @@ double doIt(int typeWork, double operandA, double operandB) noexcept(false)
 
     return 0.0;
 }
+
+

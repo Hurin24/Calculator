@@ -13,11 +13,17 @@
 
 #include <QString>
 #include <QDebug>
+#include <QCoreApplication>
+#include <QDir>
 
 CalculatorRequestWorker::CalculatorRequestWorker(QObject* ptrParent) :
                          QObject(ptrParent)
 {
     start();
+    m_calculatorSharedWrapper.load(QCoreApplication::applicationDirPath().toStdString() + QString(QDir::separator()).toStdString() + std::string("libCalculator_shared.dll"));
+    qDebug() << "path:" << QString::fromStdString(QCoreApplication::applicationDirPath().toStdString() + std::string("/libCalculator_shared.dll"));
+    qDebug() << "m_calculatorSharedWrapper.isLoaded():" << m_calculatorSharedWrapper.isLoaded();
+    qDebug() << "m_calculatorSharedWrapper.getLastError():" << QString::fromStdString(m_calculatorSharedWrapper.getLastError());
 }
 
 CalculatorRequestWorker::~CalculatorRequestWorker()

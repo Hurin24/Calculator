@@ -2,12 +2,17 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import Calculator 1.0
+import Qt.labs.settings 1.0
 
 Rectangle
 {
+    id: topItem
+
     color: Qt.rgba(0,0,0,0)
 
     required property CalculatorInputReader calculatorInputReader
+    required property Settings settings
+    required property StackView stackView
     property alias textIndicatorWidget: textIndicatorWidget
 
     Connections
@@ -115,8 +120,10 @@ Rectangle
             Layout.fillHeight: true
 
             //Первый ряд
-            Item
+            CalculatorButton
             {
+                textButton: "⚙️"
+
                 Layout.minimumWidth: 30
                 Layout.minimumHeight: 30
 
@@ -125,6 +132,23 @@ Rectangle
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+
+                onWasReleased:
+                {
+                    stackView.push(componentCalculatorSettings)
+                }
+
+                Component
+                {
+                    id: componentCalculatorSettings
+
+                    CalculatorSettings
+                    {
+                        settings: topItem.settings
+                        stackView: topItem.stackView
+                        calculatorInputReader: topItem.calculatorInputReader
+                    }
+                }
             }
 
             CalculatorButton

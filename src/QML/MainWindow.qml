@@ -13,10 +13,8 @@ ApplicationWindow
         id: settings
         property alias windowWidth: topItem.width
         property alias windowHeight: topItem.height
+        property alias delay: calculatorInputReader.delay
     }
-
-    width: settings.windowWidth
-    height: settings.windowHeight
 
     visible: true
 
@@ -67,41 +65,48 @@ ApplicationWindow
         calculatorOutputWriter: calculatorOutputWriter
     }
 
-    RowLayout
+    StackView
     {
+        id: stackView
+
         anchors.fill: parent
         anchors.margins: 10
 
-        spacing: 10
+        initialItem: RowLayout
+                     {
+                         spacing: 10
 
-        CalculatorWidget
-        {
-            Layout.minimumWidth: 300
-            Layout.minimumHeight: 300
+                         CalculatorWidget
+                         {
+                             Layout.minimumWidth: 300
+                             Layout.minimumHeight: 300
 
-            Layout.preferredWidth: 50
-            Layout.preferredHeight: 100
+                             Layout.preferredWidth: 50
+                             Layout.preferredHeight: 100
 
-            Layout.fillWidth: true
-            Layout.fillHeight: true
+                             Layout.fillWidth: true
+                             Layout.fillHeight: true
 
-            calculatorInputReader: calculatorInputReader
-        }
+                             calculatorInputReader: calculatorInputReader
+                             settings: settings
+                             stackView: stackView
+                         }
 
-        HistoryRequestWidget
-        {
-            Layout.minimumWidth: 50
-            Layout.minimumHeight: 100
+                         HistoryRequestWidget
+                         {
+                             Layout.minimumWidth: 50
+                             Layout.minimumHeight: 100
 
-            Layout.preferredWidth: 300
-            Layout.preferredHeight: 300
+                             Layout.preferredWidth: 300
+                             Layout.preferredHeight: 300
 
-            Layout.fillWidth: true
-            Layout.fillHeight: true
+                             Layout.fillWidth: true
+                             Layout.fillHeight: true
 
-            calculatorRequestQueue: calculatorRequestQueue
-            calculatorResponseQueue: calculatorResponseQueue
-            calculatorOutputWriter: calculatorOutputWriter
-        }
+                             calculatorRequestQueue: calculatorRequestQueue
+                             calculatorResponseQueue: calculatorResponseQueue
+                             calculatorOutputWriter: calculatorOutputWriter
+                         }
+                     }
     }
 }

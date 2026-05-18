@@ -1,7 +1,9 @@
 <RCC>
     <qresource prefix="/">
         <file>CalculatorButton.qml</file>
+        <file>CalculatorSettings.qml</file>
         <file>CalculatorWidget.qml</file>
+        <file>DoubleTextIndicatorWidget.qml</file>
         <file>HistoryRequestWidget.qml</file>
         <file>LogViewWidget.qml</file>
         <file>MainWindow.qml</file>

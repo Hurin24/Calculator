@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 
 project(libCalculator)
 
-set(SOURCES Calculator.cpp)
-set(HEADERS Calculator.h)
+set(SOURCES Calculator.cpp CalculatorSharedWrapper.cpp)
+set(HEADERS Calculator.h CalculatorSharedWrapper.cpp)
 
 #Создаем статическую библиотеку
 add_library(Calculator_static STATIC ${SOURCES} ${HEADERS})
