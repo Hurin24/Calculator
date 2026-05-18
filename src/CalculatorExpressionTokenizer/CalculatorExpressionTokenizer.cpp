@@ -48,7 +48,7 @@ int CalculatorExpressionTokenizer::parse(const QString& expression, int offset)
             }
             case WasFoundOperationSymbol:
             {
-                m_state = WaitStartIntegerPartNumber;
+                m_state = WaitNegativeSymbol;
                 m_tokenType = Operation;
                 return i;
                 break;
@@ -80,7 +80,7 @@ int CalculatorExpressionTokenizer::parse(const QString& expression, int offset)
         case WaitEndOperationSymbol:
         case WasFoundOperationSymbol:
         {
-            m_state = WaitStartIntegerPartNumber;
+            m_state = WaitNegativeSymbol;
             m_tokenType = Operation;
             break;
         }
