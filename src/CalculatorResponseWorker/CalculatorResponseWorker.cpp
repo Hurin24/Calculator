@@ -84,7 +84,7 @@ void CalculatorResponseWorker::process()
 
         conditionVariableUniqueLock.unlock();
 
-        while(true)
+        while(m_isWork)
         {
             conditionVariableUniqueLock.lock();
 

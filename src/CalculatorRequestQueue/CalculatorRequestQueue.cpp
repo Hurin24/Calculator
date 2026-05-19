@@ -60,7 +60,11 @@ void CalculatorRequestQueue::addRequest(QString newRequest, int delay)
     }
 
     std::unique_ptr<CalculatorRequest> newCalculatorRequest(new CalculatorRequest(newRequest, delay));
-    m_calculatorOutputWriter->writeRequest(newCalculatorRequest);
+
+    if(m_calculatorOutputWriter)
+    {
+        m_calculatorOutputWriter->writeRequest(newCalculatorRequest);
+    }
 
 
     std::unique_lock<std::mutex> uniqueLock(m_calculatorRequestListMutex);

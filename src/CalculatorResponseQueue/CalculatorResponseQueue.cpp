@@ -95,7 +95,10 @@ std::unique_ptr<CalculatorResponse> CalculatorResponseQueue::getResponse()
 
         uniqueLock.unlock();
 
-        m_calculatorOutputWriter->writeResponse(returnPtr);
+        if(m_calculatorOutputWriter)
+        {
+            m_calculatorOutputWriter->writeResponse(returnPtr);
+        }
 
         emit sizeChanged();
 
